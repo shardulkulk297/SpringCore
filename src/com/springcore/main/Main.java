@@ -1,5 +1,6 @@
 package com.springcore.main;
 
+import java.lang.foreign.AddressLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -7,8 +8,18 @@ import java.util.Scanner;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.springcore.main.exception.InvalidIdException;
+import com.springcore.main.model.Address;
 import com.springcore.main.model.Customer;
+import com.springcore.main.model.PolicyHolder;
 import com.springcore.main.service.CustomerService;
+import com.springcore.main.service.PolicyHolderService;
+
+
+
+
+
+
+
 
 
 
@@ -21,7 +32,7 @@ public class Main {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 		
 		CustomerService customerService = context.getBean(CustomerService.class);
-		
+		PolicyHolderService policyHolderService = context.getBean(PolicyHolderService.class);
 		Scanner sc = new Scanner(System.in);
 		boolean running = true;
 		while(running) 
@@ -33,6 +44,9 @@ public class Main {
 			System.out.println("3. Get Customer by Id");
 			System.out.println("4. Delete Customer");
 			System.out.println("5. Get All Customers");
+			System.out.println("6. Insert PolicyHolder;");
+			System.out.println("7. Get All PolicyHolders:");
+			System.out.println("8. Insert Address: ");
 			System.out.println("0. EXIT");
 			System.out.println("Enter Choice: ");
 			int choice = sc.nextInt();
@@ -45,7 +59,7 @@ public class Main {
 				System.out.println("Enter City: ");
 				String city = sc.next();
 				
-				Customer customer = new Customer(name, city);
+				Customer customer = context.getBean(Customer.class,name, city);
 				boolean result = customerService.insertCustomer(customer);
 				
 				if(result) {
@@ -124,6 +138,14 @@ public class Main {
 			
 			case 4->{
 				System.out.println("Delete");
+				System.out.println("Enter customer id to delete: ");
+				int id = sc.nextInt();
+				boolean result = customerService.deleteCustomer(id);
+				if(result) {
+					System.out.println("Deleted Successfully");
+				}
+				
+				
 			}
 			case 5->{
 				System.out.println("Get All Customers");
@@ -143,6 +165,63 @@ public class Main {
 				
 				
 			}
+			
+			case 6->{
+				System.out.println("Enter Your Information: ");
+				System.out.println("Enter name: ");
+				String name = sc.next();
+				System.out.println("Enter PAN NO");
+				String panString = sc.next();
+				System.out.println("Enter Address Id: ");
+				int aid = sc.nextInt();
+				Address address = policyHolderService.getAddressById(aid);
+				PolicyHolder policyholder = new PolicyHolder(name, panString, address);
+				boolean result2 = policyHolderService.addPolicyHolder(policyholder);
+				if(result2) {
+					System.out.println("Inserted Successfully");
+					
+				}
+				else {
+					System.out.println("SOMETHING WENT WRONG");
+				}
+				
+			
+				
+			}
+			
+			case 7->{
+				
+				//Get all PolicyHolders
+				System.out.println("All PolicyHolders: ");
+				List<PolicyHolder> policyHolders = policyHolderService.getAllPolicyHolders();
+				for(PolicyHolder ph: policyHolders) {
+					System.out.println(policyHolders);
+				}
+				
+			
+				
+			}
+			
+			case 8->{
+				System.out.println("Insert Address: ");
+			
+				System.out.println("Enter Street: ");
+				String street = sc.nextLine();
+				System.out.println("Enter City: ");
+				String city = sc.next();
+				System.out.println("Enter State: ");
+				String state = sc.next();
+				
+				Address address = new Address(street, city, state);
+				boolean result = policyHolderService.addAddress(address);
+				if(result) {
+					System.out.println("Address Inserted Successfully");
+				}
+				else {
+					System.out.println("Something went wrong");
+				}
+			}
+			
 			
 			case 0->{
 				running = false;

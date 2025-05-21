@@ -94,5 +94,16 @@ public class CustomerDao {
 		
 		
 	}
+	
+	public boolean deleteCustomer(int id) {
+		String sql = "DELETE FROM Customer WHERE id = ?";
+		int rowsDeleted = jdbcTemplate.update(sql, id);
+		if(rowsDeleted > 0) {
+			return true;
+		}
+		else {
+			throw new InvalidIdException("Customer not found, ID INVALID");
+		}
+	}
 
 }

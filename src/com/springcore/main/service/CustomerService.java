@@ -61,5 +61,18 @@ public class CustomerService {
 		Customer customer = new Customer((int)customerMap.get("id"), (String)customerMap.get("name"),(String)customerMap.get("city"));
 		return customer;
 	}
+	
+	public boolean deleteCustomer(int id) throws InvalidIdException{
+
+		if(id == 0 | id < 0) {
+			throw new InvalidIdException("Id can't be 0 or negative");
+			
+		}
+		
+		return customerDao.deleteCustomer(id);
+	}
+	
+	
+	
 
 }
